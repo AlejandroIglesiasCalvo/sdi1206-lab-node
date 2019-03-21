@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+var gestorBD = require("./modules/gestorBD.js");
+gestorBD.init(app,mongo);
 
 // Variables
 app.set('port', 8081);
@@ -17,8 +19,8 @@ app.set('db','mongodb://admin:ornitorrinco@tiendamusica-shard-00-00-en3ox.mongod
 
 
 //Rutas/controladores por lógica
-require("./routes/rusuarios.js")(app, swig);
-require("./routes/rcanciones.js")(app, swig, mongo);
+require("./routes/rusuarios.js")(app, swig, gestorBD);
+require("./routes/rcanciones.js")(app, swig, gestorBD);
 
 // lanzar el servidor
 app.listen(app.get('port'), function() {
