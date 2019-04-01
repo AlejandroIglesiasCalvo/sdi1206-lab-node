@@ -36,6 +36,9 @@ routerUsuarioSession.use(function(req, res, next) {
 //Aplicar routerUsuarioSession
 app.use("/canciones/agregar",routerUsuarioSession);
 app.use("/publicaciones",routerUsuarioSession);
+app.use("/cancion/comprar",routerUsuarioSession);
+app.use("/compras",routerUsuarioSession);
+
 //app.use("/audios/",routerUsuarioSession);
 
 //routerUsuarioAutor
@@ -73,7 +76,18 @@ routerAudios.use(function(req, res, next) {
             if(req.session.usuario && canciones[0].autor == req.session.usuario ){
                 next();
             } else {
-                res.redirect("/tienda");
+                var criterio = {
+                    usuario : req.session.usuario,
+                    cancionId : mongo.ObjectID(idCancion)
+                };
+
+                gestorBD.obtenerCompras(criterio ,function(compras){
+                    if (compras != null && compras.length > 0 ){
+                        next();
+                    } else {
+                        res.redirect("/tienda");
+                    }
+                });
             }
         })
 });
